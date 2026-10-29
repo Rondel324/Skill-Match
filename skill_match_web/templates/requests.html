@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "macros.html" import csrf %}
+{% block title %}Requests{% endblock %}
+{% block content %}
+<div class="narrow">
+  <h2>🤝 Tutoring &amp; Help Requests</h2>
+  {% for title, items, incoming in (("Received requests", received, True), ("Sent requests", sent, False)) %}
+  <div class="card pad">
+    <div class="caps muted tiny">{{ title }}</div>
+    {% for r in items %}
+    <div class="req">
+      <div class="row between">
+        <strong class="indigo">{% if incoming %}{{ r.sender.name }} requested help{% else %}Request to {{ r.receiver.name }}{% endif %}</strong>
+        <span class="badge {{ {'Pending': 'amber', 'Accepted': 'green', 'Declined': 'red'}[r.status] }}">{{ r.status }}</span>
+      </div>
+      <div class="small muted">Schedule: {{ r.schedule }}</div>
+      <div class="small muted">“{{ r.message }}”</div>
+      {% if incoming and r.status == 'Pending' %}
+      <div class="row">
+        <form method="post" action="{{ url_for('respond_request', req_id=r.id, action='accept') }}" class="inline">{{ csrf() }}<button class="btn green small">Accept</button></form>
+        <form method="post" action="{{ url_for('respond_request', req_id=r.id, action='decline') }}" class="inline">{{ csrf() }}<button class="btn red small">Decline</button></form>
+      </div>
+      {% endif %}
+    </div>
+    {% else %}
+    <p class="muted small">{{ 'No incoming requests.' if incoming else 'No sent requests.' }}</p>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

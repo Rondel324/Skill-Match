@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "macros.html" import csrf, avatar, program_select, year_select %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="card pad narrow">
+  <div class="row">
+    {{ avatar(me, 80) }}
+    <div>
+      <h2>{{ me.name }}</h2>
+      <div class="indigo small"><strong>{{ me.course }} • {{ me.year }}</strong></div>
+      <form method="post" action="{{ url_for('upload_avatar') }}" enctype="multipart/form-data" class="row">
+        {{ csrf() }}
+        <input type="file" name="photo" accept="image/*" required>
+        <button class="btn small light">📷 Upload Photo</button>
+      </form>
+    </div>
+  </div>
+  <hr>
+  <form method="post">
+    {{ csrf() }}
+    <label>Name<input name="name" value="{{ me.name }}" required></label>
+    <label>Email (read only)<input value="{{ me.email }}" readonly></label>
+    <label>College Program{{ program_select("course", me.course) }}</label>
+    <label>Year Level{{ year_select("year", me.year) }}</label>
+    <label>Skills You Can Teach (comma-separated)<input name="skills" value="{{ me.skills }}"></label>
+    <label>Subjects You Need Help With (comma-separated)<input name="needs" value="{{ me.needs }}"></label>
+    <label>Availability (e.g. Mon/Wed 2-5 PM)<input name="availability" value="{{ me.availability }}"></label>
+    <button class="btn block">Save Profile</button>
+  </form>
+</div>
+{% endblock %}

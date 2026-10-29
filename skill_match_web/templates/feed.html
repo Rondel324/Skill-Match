@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% from "macros.html" import csrf, avatar %}
+{% block title %}Feed{% endblock %}
+{% block content %}
+<div class="narrow">
+  <div class="card pad">
+    <div class="row">{{ avatar(me, 40) }}<strong>{{ me.name }}</strong></div>
+    <form method="post" action="{{ url_for('create_post') }}">
+      {{ csrf() }}
+      <textarea name="content" rows="3" maxlength="2000" placeholder="Share a skill, ask a question, offer help…" required></textarea>
+      <div class="row between"><span class="muted small">Be helpful &amp; respectful ✨</span><button class="btn">Post to Feed</button></div>
+    </form>
+  </div>
+
+  {% for post in posts %}
+  <div class="card pad" id="post-{{ post.id }}">
+    <div class="row">
+      {{ avatar(post.user, 40) }}
+      <div><strong class="indigo">{{ post.user.name }}</strong><div class="muted tiny">{{ post.user.course }} • {{ post.created_at|localtime }}</div></div>
+    </div>
+    <p class="content">{{ post.content }}</p>
+    <div class="row">
+      <form method="post" action="{{ url_for('toggle_like', post_id=post.id) }}" class="inline">
+        {{ csrf() }}
+        <button class="link {{ 'liked' if me.id in post.liked_ids }}">❤ {{ post.likes|length }} Likes</button>
+      </form>
+      <span class="muted small">💬 {{ post.comments|length }} Comments</span>
+    </div>
+    <form method="post" action="{{ url_for('add_comment', post_id=post.id) }}" class="row reply">
+      {{ csrf() }}
+      <input name="text" maxlength="1000" placeholder="Write a reply…" required>
+      <button class="btn small">Reply</button>
+    </form>
+    {% for c in post.comments %}
+    <div class="comment"><strong class="indigo small">{{ c.user.name }}</strong><div>{{ c.text }}</div></div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No posts in the feed yet. Be the first to share something!</p>
+  {% endfor %}
+</div>
+{% endblock %}

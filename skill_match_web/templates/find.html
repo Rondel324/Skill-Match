@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "macros.html" import avatar, program_select %}
+{% block title %}Find Tutors{% endblock %}
+{% block content %}
+<div class="card pad row between wrap">
+  <h2>🔍 Discover Study Partners &amp; Tutors</h2>
+  <form method="get" class="row">
+    <input name="q" value="{{ q }}" placeholder="Search name, skill, subject…">
+    {{ program_select("program", program, all_option=True) }}
+    <button class="btn small">Search</button>
+  </form>
+</div>
+
+<div class="grid">
+  {% for s in students %}
+  <div class="card pad student">
+    <div class="row">
+      {{ avatar(s, 48) }}
+      <div><strong class="indigo">{{ s.name }}</strong><div class="program">{{ s.course }}</div><span class="badge gray">{{ s.year }}</span></div>
+    </div>
+    <p class="muted small">Availability: {{ s.availability or 'Flexible' }}</p>
+    <div class="tiny muted caps">Can teach:</div>
+    <div>{% for t in s.skill_list %}<span class="badge indigo-bg">{{ t }}</span>{% else %}<span class="muted tiny">None listed</span>{% endfor %}</div>
+    <div class="tiny muted caps">Needs help with:</div>
+    <div>{% for t in s.need_list %}<span class="badge pink-bg">{{ t }}</span>{% else %}<span class="muted tiny">None listed</span>{% endfor %}</div>
+    <a class="btn block small" href="{{ url_for('request_help', tutor_id=s.id) }}">Request Help</a>
+  </div>
+  {% else %}
+  <p class="empty">No students found matching your search.</p>
+  {% endfor %}
+</div>
+{% endblock %}

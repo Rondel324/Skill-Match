@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "macros.html" import csrf, program_select, year_select %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<div class="card auth">
+  <h1>Welcome to Skill Match!</h1>
+  <p class="muted">Connect, share skills, and ace your courses together.</p>
+  <div class="tabs">
+    <button type="button" id="tab-login" onclick="show('login')">Login</button>
+    <button type="button" id="tab-register" onclick="show('register')">Register</button>
+  </div>
+
+  <form id="form-login" method="post" action="{{ url_for('login') }}">
+    {{ csrf() }}
+    <label>Email<input type="email" name="email" required></label>
+    <label>Password<input type="password" name="password" required></label>
+    <button class="btn block">Login</button>
+  </form>
+
+  <form id="form-register" method="post" action="{{ url_for('register') }}">
+    {{ csrf() }}
+    <label>Full Name<input name="name" required></label>
+    <label>Email<input type="email" name="email" required></label>
+    <label>Password (min 6 characters)<input type="password" name="password" minlength="6" required></label>
+    <label>College Program{{ program_select("course") }}</label>
+    <label>Year Level{{ year_select("year") }}</label>
+    <button class="btn block">Create Account</button>
+  </form>
+</div>
+<script>
+  function show(which) {
+    for (const k of ["login", "register"]) {
+      document.getElementById("form-" + k).style.display = k === which ? "block" : "none";
+      document.getElementById("tab-" + k).classList.toggle("on", k === which);
+    }
+  }
+  show("{{ 'register' if tab == 'register' else 'login' }}");
+</script>
+{% endblock %}

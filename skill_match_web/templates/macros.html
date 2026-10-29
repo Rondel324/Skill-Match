@@ -1,0 +1,24 @@
+{% macro avatar(u, size=40) -%}
+{% if u.has_avatar -%}
+<img class="avatar" src="{{ url_for('avatar', user_id=u.id, v=u.avatar_v) }}" width="{{ size }}" height="{{ size }}" alt="">
+{%- else -%}
+<span class="avatar" style="width:{{ size }}px;height:{{ size }}px;background:{{ u.color }};font-size:{{ (size / 2.6)|int }}px">{{ u.initials }}</span>
+{%- endif %}
+{%- endmacro %}
+
+{% macro csrf() -%}<input type="hidden" name="_csrf" value="{{ csrf_token() }}">{%- endmacro %}
+
+{% macro program_select(name, selected="", all_option=False) -%}
+<select name="{{ name }}">
+  {% if all_option %}<option value="All Programs">All Programs</option>{% endif %}
+  {% for group, items in program_groups.items() %}
+  <optgroup label="{{ group }}">
+    {% for p in items %}<option value="{{ p }}" {{ 'selected' if p == selected }}>{{ p }}</option>{% endfor %}
+  </optgroup>
+  {% endfor %}
+</select>
+{%- endmacro %}
+
+{% macro year_select(name, selected="") -%}
+<select name="{{ name }}">{% for y in years %}<option {{ 'selected' if y == selected }}>{{ y }}</option>{% endfor %}</select>
+{%- endmacro %}

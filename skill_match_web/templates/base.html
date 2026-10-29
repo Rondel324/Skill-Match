@@ -1,0 +1,30 @@
+{% from "macros.html" import csrf %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Skill Match{% endblock %} - Skill Match</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav class="nav">
+  <a class="brand" href="{{ url_for('index') }}">🎓 Skill Match</a>
+  {% if me %}
+  <div class="links">
+    <a class="{{ 'active' if active == 'feed' }}" href="{{ url_for('feed') }}">🏠 Feed</a>
+    <a class="{{ 'active' if active == 'find' }}" href="{{ url_for('find') }}">👥 Find Tutors</a>
+    <a class="{{ 'active' if active == 'requests' }}" href="{{ url_for('requests_page') }}">🤝 Requests{% if pending_count %} <span class="count">{{ pending_count }}</span>{% endif %}</a>
+    <a class="{{ 'active' if active == 'profile' }}" href="{{ url_for('profile') }}">Profile</a>
+    <form method="post" action="{{ url_for('logout') }}" class="inline">{{ csrf() }}<button class="btn pink small">Logout</button></form>
+  </div>
+  {% endif %}
+</nav>
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

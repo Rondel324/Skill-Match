@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "macros.html" import csrf %}
+{% block title %}Request Help{% endblock %}
+{% block content %}
+<div class="card pad narrow">
+  <h2>Request Help from {{ tutor.name }}</h2>
+  <form method="post">
+    {{ csrf() }}
+    <label>Preferred Schedule / Time<input name="schedule" maxlength="200" required></label>
+    <label>Message / Topics to Cover<textarea name="message" rows="5" maxlength="2000" required></textarea></label>
+    <div class="row end">
+      <a class="btn gray" href="{{ url_for('find') }}">Cancel</a>
+      <button class="btn">Send Request</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
