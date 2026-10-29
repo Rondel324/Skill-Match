@@ -36,9 +36,11 @@ APP_TZ = ZoneInfo(os.environ.get("APP_TZ", "Asia/Manila"))
 
 
 def database_url():
-    url = os.environ.get("DATABASE_URL") or "sqlite:///" + os.path.join(BASE_DIR, "skill_match.db")
-    if url.startswith("postgres://"):  # some hosts still hand out the old scheme
-        url = url.replace("postgres://", "postgresql://", 1)
+  url = os.environ.get("DATABASE_URL") or "sqlite:///" + os.path.join(BASE_DIR, "skill_match.db")
+  if url.startswith("postgres://"):  # some hosts still hand out the old scheme
+    url = url.replace("postgres://", "postgresql://", 1)
+  if url.startswith("postgresql://"):  # pin the driver we install (psycopg2)
+    url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
     return url
 
 
